@@ -1,8 +1,15 @@
 package com.devmicheledonato.popularmovies;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Movie implements Parcelable {
 
@@ -23,7 +30,7 @@ public class Movie implements Parcelable {
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Movie createFromParcel(Parcel in) {
             Movie instance = new Movie();
@@ -31,6 +38,7 @@ public class Movie implements Parcelable {
             instance.adult = ((boolean) in.readValue((boolean.class.getClassLoader())));
             instance.overview = ((String) in.readValue((String.class.getClassLoader())));
             instance.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+            instance.genreIds = new ArrayList<Integer>();
             in.readList(instance.genreIds, (java.lang.Integer.class.getClassLoader()));
             instance.id = ((int) in.readValue((int.class.getClassLoader())));
             instance.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
@@ -51,13 +59,11 @@ public class Movie implements Parcelable {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Movie() {
     }
 
     /**
-     * 
      * @param id
      * @param genreIds
      * @param title
@@ -74,7 +80,6 @@ public class Movie implements Parcelable {
      * @param popularity
      */
     public Movie(String posterPath, boolean adult, String overview, String releaseDate, List<Integer> genreIds, int id, String originalTitle, String originalLanguage, String title, String backdropPath, double popularity, int voteCount, boolean video, double voteAverage) {
-        super();
         this.posterPath = posterPath;
         this.adult = adult;
         this.overview = overview;
@@ -91,8 +96,35 @@ public class Movie implements Parcelable {
         this.voteAverage = voteAverage;
     }
 
+    public Movie(JSONObject jsonObject) throws JSONException {
+        this.posterPath = jsonObject.getString("poster_path");
+        this.adult = jsonObject.getBoolean("adult");
+        this.overview = jsonObject.getString("overview");
+        this.releaseDate = jsonObject.getString("release_date");
+
+        JSONArray array = jsonObject.getJSONArray("genre_ids");
+        this.genreIds = new ArrayList<Integer>();
+        for (int i = 0; i < array.length(); i++) {
+            genreIds.add(Integer.valueOf(array.getString(i)));
+        }
+
+        this.id = jsonObject.getInt("id");
+        this.originalTitle = jsonObject.getString("original_title");
+        this.originalLanguage = jsonObject.getString("original_language");
+        this.title = jsonObject.getString("title");
+        this.backdropPath = jsonObject.getString("backdrop_path");
+        this.popularity = jsonObject.getDouble("popularity");
+        this.voteCount = jsonObject.getInt("vote_count");
+        this.video = jsonObject.getBoolean("video");
+        this.voteAverage = jsonObject.getDouble("vote_average");
+    }
+
     public String getPosterPath() {
         return posterPath;
+    }
+
+    public Uri getPosterUri() {
+        return NetworkUtils.buildImageUri(getPosterPath());
     }
 
     public void setPosterPath(String posterPath) {
@@ -311,6 +343,6 @@ public class Movie implements Parcelable {
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 }

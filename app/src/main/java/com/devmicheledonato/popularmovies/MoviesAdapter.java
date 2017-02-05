@@ -57,10 +57,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder");
 
-        String posterPath = mDataSet.get(position).getPosterPath();
-        Uri imageUri = NetworkUtils.buildImageUri(posterPath);
-        Log.d(TAG, "ImageUrl: " + imageUri.toString());
-
+        Uri imageUri = mDataSet.get(position).getPosterUri();
         Picasso.with(mContext)
                 .load(imageUri)
                 .into(holder.mPosterImageView);
@@ -81,6 +78,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
         public ViewHolder(Context context, View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mPosterImageView = (ImageView) itemView.findViewById(R.id.poster_image_view);
             Log.d(TAG, "Height:" + mPosterImageView.getHeight());
             mPosterImageView.getLayoutParams().height = getHalfHeightDisplay(context);

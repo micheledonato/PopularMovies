@@ -2,4 +2,11 @@
     <string name="app_name">PopularMovies</string>
     <string name="popular_movies">Popular movies</string>
     <string name="top_rated_movies">Top rated movies</string>
+    <string name="no_connection">No connection!</string>
+    <string name="error_message">Failed to get results. Please try again.</string>
+
+
+    <!-- TODO uncomment and enter your API_KEY -->
+    <!--<string name="TMDB_API_KEY"></string>-->
+
 </resources>

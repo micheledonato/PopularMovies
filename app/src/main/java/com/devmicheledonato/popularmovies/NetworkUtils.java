@@ -1,6 +1,8 @@
 package com.devmicheledonato.popularmovies;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -19,14 +21,19 @@ public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
+    /**
+     * TMDB URL
+     */
     private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie";
-    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185/";
-
-    public static final String POPULAR = "popular";
-    public static final String TOP_RATED = "top_rated";
-
+    private static final String POPULAR = "popular";
+    private static final String TOP_RATED = "top_rated";
     private static final String PARAM_QUERY = "api_key";
 
+    /**
+     * IMAGE URL
+     */
+    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String IMAGE_SIZE = "w185";
 
     public NetworkUtils() {
     }
@@ -49,7 +56,7 @@ public class NetworkUtils {
                 .appendQueryParameter(PARAM_QUERY, context.getString(R.string.TMDB_API_KEY))
                 .build();
 
-        Log.d(TAG, "Build Uri: " + builtUri.toString());
+        Log.d(TAG, "Built TMDB Uri: " + builtUri.toString());
 
         URL url = null;
         try {
@@ -62,8 +69,11 @@ public class NetworkUtils {
 
     public static Uri buildImageUri(String posterPath) {
         Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon()
-                .appendPath(posterPath)
+                .appendPath(IMAGE_SIZE)
+                .appendEncodedPath(posterPath)
                 .build();
+
+        Log.d(TAG, "Built Image Uri: " + builtUri.toString());
         return builtUri;
     }
 
@@ -91,5 +101,11 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 }
