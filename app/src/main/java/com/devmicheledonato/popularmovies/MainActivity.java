@@ -1,6 +1,7 @@
 package com.devmicheledonato.popularmovies;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
         mMoviesListRecyclerView.setHasFixedSize(true);
 
         int spanCount = 2;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            spanCount = 4;
+        }
         int orientation = GridLayoutManager.VERTICAL;
         boolean reverseLayout = false;
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, spanCount, orientation, reverseLayout);

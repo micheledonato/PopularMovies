@@ -1,6 +1,7 @@
 package com.devmicheledonato.popularmovies;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,13 +21,15 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            mMovie = intent.getParcelableExtra(MainActivity.MOVIE_EXTRA);
-            Log.d(TAG, "" + mMovie.getGenreIds().get(0));
-        }
+        Log.d(TAG, "onCreate");
 
-        initLayout(mMovie);
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras().containsKey(MainActivity.MOVIE_EXTRA)) {
+            mMovie = intent.getParcelableExtra(MainActivity.MOVIE_EXTRA);
+            initLayout(mMovie);
+        } else {
+            showError(getString(R.string.error_details));
+        }
     }
 
     private void initLayout(Movie movie) {
@@ -40,5 +43,11 @@ public class DetailsActivity extends AppCompatActivity {
         vote.setText(String.valueOf(movie.getVoteAverage()));
         TextView overview = (TextView) findViewById(R.id.detail_overview_text_view);
         overview.setText(movie.getOverview());
+    }
+
+    private void showError(String errorMessage) {
+        Snackbar.make(findViewById(R.id.activity_details),
+                errorMessage, Snackbar.LENGTH_LONG)
+                .show();
     }
 }

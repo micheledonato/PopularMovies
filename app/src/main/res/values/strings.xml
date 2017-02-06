@@ -4,9 +4,6 @@
     <string name="top_rated_movies">Top rated movies</string>
     <string name="no_connection">No connection!</string>
     <string name="error_message">Failed to get results. Please try again.</string>
-
-
-    <!-- TODO uncomment and enter your API_KEY -->
-    <!--<string name="TMDB_API_KEY"></string>-->
-
+    <string name="error_details">Failed to get movie data</string>
+    <string name="detail_image_description">Poster movie</string>
 </resources>
