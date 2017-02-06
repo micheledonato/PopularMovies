@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getMovies(boolean popular) {
         if (NetworkUtils.isOnline(this)) {
-            URL url = NetworkUtils.buildTMDBUrl(this, popular);
+            URL url = NetworkUtils.buildTMDBUrl(popular);
             new DownloadMoviesTask().execute(url);
         } else {
             showError(getString(R.string.no_connection));

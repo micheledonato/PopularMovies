@@ -44,7 +44,7 @@ public class NetworkUtils {
      * @return
      */
 
-    public static URL buildTMDBUrl(Context context, boolean popular) {
+    public static URL buildTMDBUrl(boolean popular) {
 
         String typePath = TOP_RATED;
         if (popular) {
@@ -53,7 +53,7 @@ public class NetworkUtils {
 
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                 .appendPath(typePath)
-                .appendQueryParameter(PARAM_QUERY, context.getString(R.string.TMDB_API_KEY))
+                .appendQueryParameter(PARAM_QUERY, BuildConfig.TMDB_API_KEY)
                 .build();
 
         Log.d(TAG, "Built TMDB Uri: " + builtUri.toString());
