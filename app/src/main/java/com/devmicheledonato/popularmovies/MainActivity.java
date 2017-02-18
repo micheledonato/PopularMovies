@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             URL requestUrl = urls[0];
             String response = null;
             try {
-                response = NetworkUtils.getResponseFromHttpUrl(urls[0]);
+                response = NetworkUtils.getResponseFromHttpUrl(requestUrl);
             } catch (IOException e) {
                 e.printStackTrace();
             }
