@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.devmicheledonato.popularmovies.Model.Movie;
 import com.squareup.picasso.Picasso;
 
 public class DetailsActivity extends AppCompatActivity {
