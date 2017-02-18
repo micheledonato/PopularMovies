@@ -1,4 +1,4 @@
-package com.devmicheledonato.popularmovies.Model;
+package com.devmicheledonato.popularmovies;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,6 @@ import java.util.List;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.devmicheledonato.popularmovies.Utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
