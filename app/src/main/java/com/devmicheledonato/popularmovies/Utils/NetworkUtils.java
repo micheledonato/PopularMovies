@@ -27,8 +27,12 @@ public class NetworkUtils {
      * TMDB URL
      */
     private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie";
-    private static final String POPULAR = "popular";
-    private static final String TOP_RATED = "top_rated";
+
+    public static final String POPULAR = "popular";
+    public static final String TOP_RATED = "top_rated";
+    public static final String VIDEOS = "videos";
+    public static final String REVIEWS = "reviews";
+
     private static final String PARAM_QUERY = "api_key";
 
     /**
@@ -40,20 +44,18 @@ public class NetworkUtils {
     public NetworkUtils() {
     }
 
-    /**
-     * @param popular true for popular
-     *                false for top_rated
-     * @return
-     */
+    public static URL buildUrlWithId(int id, String path){
+        return buildTMDBUrl(Integer.toString(id), path);
+    }
 
-    public static URL buildTMDBUrl(boolean popular) {
+    public static URL buildUrl(String path){
+        return buildTMDBUrl("", path);
+    }
 
-        String typePath = TOP_RATED;
-        if (popular) {
-            typePath = POPULAR;
-        }
+    private static URL buildTMDBUrl(String id, String typePath) {
 
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                .appendPath(id)
                 .appendPath(typePath)
                 .appendQueryParameter(PARAM_QUERY, BuildConfig.TMDB_API_KEY)
                 .build();

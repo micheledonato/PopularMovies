@@ -47,12 +47,12 @@ public class MainActivity extends AppCompatActivity {
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator_progress_bar);
         initRecyclerView();
 
-        getMovies(true);
+        getMovies(NetworkUtils.POPULAR);
     }
 
-    private void getMovies(boolean popular) {
+    private void getMovies(String path) {
         if (NetworkUtils.isOnline(this)) {
-            URL url = NetworkUtils.buildTMDBUrl(popular);
+            URL url = NetworkUtils.buildUrl(path);
             new DownloadMoviesTask().execute(url);
         } else {
             showError(getString(R.string.no_connection));
@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     handleResponse(response);
                     mMoviesAdapter.setDataSet(mMoviesArrayList);
-                    mMoviesAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -153,10 +152,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.popular_movies:
-                getMovies(true);
+                getMovies(NetworkUtils.POPULAR);
                 return true;
             case R.id.top_rated_movies:
-                getMovies(false);
+                getMovies(NetworkUtils.TOP_RATED);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

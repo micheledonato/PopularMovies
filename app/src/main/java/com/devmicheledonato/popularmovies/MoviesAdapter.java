@@ -36,6 +36,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     public void setDataSet(ArrayList<Movie> dataSet) {
         this.mDataSet = dataSet;
+        notifyDataSetChanged();
     }
 
     public void setListener(OnItemClickListener listener) {
