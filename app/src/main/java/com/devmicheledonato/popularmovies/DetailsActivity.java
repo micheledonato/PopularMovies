@@ -1,6 +1,7 @@
 package com.devmicheledonato.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -41,6 +42,7 @@ public class DetailsActivity extends AppCompatActivity implements MoviesLoader.O
     private MoviesLoader mVideosLoader;
     private RecyclerView mVideosRecyclerView;
     private VideosAdapter mVideosAdapter;
+    private ArrayList<Video> mVideos;
 
     private MoviesLoader mReviewsLoader;
     private RecyclerView mReviewsRecyclerView;
@@ -74,14 +76,18 @@ public class DetailsActivity extends AppCompatActivity implements MoviesLoader.O
             makeSearchQuery(mVideosLoader, mMovie.getId(), NetworkUtils.VIDEOS, TRAILERS_SEARCH_LOADER);
             makeSearchQuery(mReviewsLoader, mMovie.getId(), NetworkUtils.REVIEWS, REVIEWS_SEARCH_LOADER);
 
-
-
             mVideosRecyclerView = (RecyclerView) findViewById(R.id.videos_recycler_view);
             mVideosRecyclerView.setHasFixedSize(true);
             LinearLayoutManager mVideosLayoutManager = new LinearLayoutManager(this);
             mVideosRecyclerView.setLayoutManager(mVideosLayoutManager);
             mVideosAdapter = new VideosAdapter();
-//            mVideosAdapter.setListener(this);
+            mVideosAdapter.setListener(new VideosAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View itemView, int position) {
+                    String key = mVideos.get(position).getKey();
+                    startActivity(new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYouTubeUri(key)));
+                }
+            });
             mVideosRecyclerView.setAdapter(mVideosAdapter);
 
             mReviewsRecyclerView = (RecyclerView) findViewById(R.id.reviews_recycler_view);
@@ -89,7 +95,6 @@ public class DetailsActivity extends AppCompatActivity implements MoviesLoader.O
             LinearLayoutManager mReviewsLayoutManager = new LinearLayoutManager(this);
             mReviewsRecyclerView.setLayoutManager(mReviewsLayoutManager);
             mReviewsAdapter = new ReviewsAdapter();
-//            mReviewsAdapter.setListener(this);
             mReviewsRecyclerView.setAdapter(mReviewsAdapter);
 
         } else {
@@ -141,7 +146,9 @@ public class DetailsActivity extends AppCompatActivity implements MoviesLoader.O
                 reviews.add(review);
             }
             mMovie.setReviews(reviews);
-            mReviewsAdapter.setDataSet(reviews);
+            if (mReviewsAdapter != null) {
+                mReviewsAdapter.setDataSet(reviews);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -153,14 +160,16 @@ public class DetailsActivity extends AppCompatActivity implements MoviesLoader.O
         try {
             JSONObject response = new JSONObject(data);
             JSONArray results = response.getJSONArray("results");
-            ArrayList<Video> videos = new ArrayList<>();
+            mVideos = new ArrayList<>();
             for (int i = 0; i < results.length(); i++) {
                 JSONObject videosJsonObject = results.getJSONObject(i);
                 Video video = new Video(videosJsonObject);
-                videos.add(video);
+                mVideos.add(video);
             }
-            mMovie.setVideos(videos);
-            mVideosAdapter.setDataSet(videos);
+            mMovie.setVideos(mVideos);
+            if (mVideosAdapter != null) {
+                mVideosAdapter.setDataSet(mVideos);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

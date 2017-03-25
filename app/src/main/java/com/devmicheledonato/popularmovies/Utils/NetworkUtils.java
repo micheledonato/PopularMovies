@@ -41,6 +41,12 @@ public class NetworkUtils {
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE = "w185";
 
+    /**
+     * YOUTUBE URL
+     */
+
+    private static final String YOUTUBE_URL = "https://www.youtube.com/watch?v=";
+
     public NetworkUtils() {
     }
 
@@ -78,6 +84,15 @@ public class NetworkUtils {
                 .build();
 
         Log.d(TAG, "Built Image Uri: " + builtUri.toString());
+        return builtUri;
+    }
+
+    public static Uri buildYouTubeUri(String key){
+        Uri builtUri = Uri.parse(YOUTUBE_URL).buildUpon()
+                .appendPath(key)
+                .build();
+
+        Log.d(TAG, "Built YouYube Uri: " + builtUri.toString());
         return builtUri;
     }
 

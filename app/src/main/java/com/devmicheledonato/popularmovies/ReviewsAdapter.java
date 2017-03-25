@@ -78,13 +78,14 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mContent = (TextView) itemView.findViewById(R.id.content_text_view);
             mAuthor = (TextView) itemView.findViewById(R.id.author_text_view);
         }
 
         @Override
         public void onClick(View v) {
-
+            mListener.onItemClick(v, getLayoutPosition());
         }
     }
 }

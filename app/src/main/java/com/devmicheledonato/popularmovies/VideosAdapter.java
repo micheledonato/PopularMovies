@@ -23,9 +23,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
     private static final String TAG = VideosAdapter.class.getSimpleName();
 
     private Context mContext;
-
     private ArrayList<Video> mDataSet;
-
     private static OnItemClickListener mListener;
 
     public interface OnItemClickListener {
@@ -82,13 +80,14 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mLogoImageView = (ImageView) itemView.findViewById(R.id.logo_image_view);
             mNameTextView = (TextView) itemView.findViewById(R.id.name_text_view);
         }
 
         @Override
         public void onClick(View v) {
-
+            mListener.onItemClick(v, getLayoutPosition());
         }
     }
 }
