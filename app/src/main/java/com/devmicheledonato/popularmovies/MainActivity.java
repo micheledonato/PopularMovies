@@ -2,7 +2,6 @@ package com.devmicheledonato.popularmovies;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,18 +20,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesLoader.OnMoviesLoaderActionsListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final String MOVIE_EXTRA = "MOVIE_EXTRA";
 
+    private static final int MOVIES_SEARCH_LOADER = 1000;
+
     private RecyclerView mMoviesListRecyclerView;
     private MoviesAdapter mMoviesAdapter;
+    private MoviesLoader mMoviesLoader;
 
     private ProgressBar mLoadingIndicator;
 
@@ -47,13 +48,16 @@ public class MainActivity extends AppCompatActivity {
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator_progress_bar);
         initRecyclerView();
 
+        mMoviesLoader = new MoviesLoader(this, getSupportLoaderManager());
+        mMoviesLoader.setActionsListener(this);
+
         getMovies(NetworkUtils.POPULAR);
     }
 
     private void getMovies(String path) {
         if (NetworkUtils.isOnline(this)) {
             URL url = NetworkUtils.buildUrl(path);
-            new DownloadMoviesTask().execute(url);
+            mMoviesLoader.startLoader(MOVIES_SEARCH_LOADER, url.toString());
         } else {
             showError(getString(R.string.no_connection));
         }
@@ -85,62 +89,6 @@ public class MainActivity extends AppCompatActivity {
         mMoviesListRecyclerView.setAdapter(mMoviesAdapter);
     }
 
-    private class DownloadMoviesTask extends AsyncTask<URL, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(URL... urls) {
-            URL requestUrl = urls[0];
-            String response = null;
-            try {
-                response = NetworkUtils.getResponseFromHttpUrl(requestUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            Log.d(TAG, "RESPONSE: " + response);
-
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-
-            if (response != null && !response.equals("")) {
-                try {
-                    handleResponse(response);
-                    mMoviesAdapter.setDataSet(mMoviesArrayList);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                showError(getString(R.string.error_message));
-            }
-        }
-    }
-
-    private void handleResponse(String responseString) throws JSONException {
-        JSONObject response = new JSONObject(responseString);
-        JSONArray results = response.getJSONArray("results");
-        mMoviesArrayList = new ArrayList<Movie>();
-        for (int i = 0; i < results.length(); i++) {
-            JSONObject movieJsonObject = results.getJSONObject(i);
-            Movie movie = new Movie(movieJsonObject);
-            mMoviesArrayList.add(movie);
-        }
-    }
-
-    private void showError(String errorMessage) {
-        Snackbar.make(findViewById(R.id.activity_main),
-                errorMessage, Snackbar.LENGTH_LONG)
-                .show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -159,6 +107,45 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showError(String errorMessage) {
+        Snackbar.make(findViewById(R.id.activity_main),
+                errorMessage, Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public void onShowProgress() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onHideProgress() {
+        mLoadingIndicator.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onShowErrorMessage() {
+        showError(getString(R.string.error_message));
+    }
+
+    @Override
+    public void onHandleResponse(String data, int loaderID) {
+        try {
+            JSONObject response = new JSONObject(data);
+            JSONArray results = response.getJSONArray("results");
+            mMoviesArrayList = new ArrayList<Movie>();
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject movieJsonObject = results.getJSONObject(i);
+                Movie movie = new Movie(movieJsonObject);
+                mMoviesArrayList.add(movie);
+            }
+            mMoviesAdapter.setDataSet(mMoviesArrayList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            showError(getString(R.string.error_message));
         }
     }
 }

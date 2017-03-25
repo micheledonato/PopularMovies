@@ -44,8 +44,8 @@ public class NetworkUtils {
     public NetworkUtils() {
     }
 
-    public static URL buildUrlWithId(int id, String path){
-        return buildTMDBUrl(Integer.toString(id), path);
+    public static URL buildUrlWithId(int movieId, String path){
+        return buildTMDBUrl(Integer.toString(movieId), path);
     }
 
     public static URL buildUrl(String path){

@@ -29,6 +29,10 @@ public class Movie implements Parcelable {
     private int voteCount;
     private boolean video;
     private double voteAverage;
+
+    private List<Review> reviews;
+    private List<Video> videos;
+
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
         @SuppressWarnings({
@@ -51,6 +55,10 @@ public class Movie implements Parcelable {
             instance.voteCount = ((int) in.readValue((int.class.getClassLoader())));
             instance.video = ((boolean) in.readValue((boolean.class.getClassLoader())));
             instance.voteAverage = ((double) in.readValue((double.class.getClassLoader())));
+
+            instance.reviews = new ArrayList<Review>();
+            instance.videos = new ArrayList<Video>();
+
             return instance;
         }
 
@@ -96,6 +104,9 @@ public class Movie implements Parcelable {
         this.voteCount = voteCount;
         this.video = video;
         this.voteAverage = voteAverage;
+
+        this.reviews = null;
+        this.videos = null;
     }
 
     public Movie(JSONObject jsonObject) throws JSONException {
@@ -119,6 +130,9 @@ public class Movie implements Parcelable {
         this.voteCount = jsonObject.getInt("vote_count");
         this.video = jsonObject.getBoolean("video");
         this.voteAverage = jsonObject.getDouble("vote_average");
+
+        this.reviews = null;
+        this.videos = null;
     }
 
     public String getPosterPath() {
@@ -307,6 +321,22 @@ public class Movie implements Parcelable {
         return this;
     }
 
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -342,6 +372,9 @@ public class Movie implements Parcelable {
         dest.writeValue(voteCount);
         dest.writeValue(video);
         dest.writeValue(voteAverage);
+
+        dest.writeList(reviews);
+        dest.writeList(videos);
     }
 
     public int describeContents() {

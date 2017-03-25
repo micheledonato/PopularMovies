@@ -50,7 +50,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         mContext = parent.getContext();
 
         View v = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_list, parent, false);
+                .inflate(R.layout.movie_poster_item_list, parent, false);
         ViewHolder viewHolder = new ViewHolder(mContext, v);
         return viewHolder;
     }
