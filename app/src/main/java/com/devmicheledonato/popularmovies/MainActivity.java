@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements MoviesLoader.OnMo
 
     private ArrayList<Movie> mMoviesArrayList = null;
 
+    private static final String PATH = "path_state";
+    private String mPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +54,22 @@ public class MainActivity extends AppCompatActivity implements MoviesLoader.OnMo
         mMoviesLoader = new MoviesLoader(this, getSupportLoaderManager());
         mMoviesLoader.setActionsListener(this);
 
-        getMovies(NetworkUtils.POPULAR);
+        if (savedInstanceState != null) {
+            mPath = savedInstanceState.getString(PATH);
+            getMovies(mPath);
+        } else {
+            getMovies(NetworkUtils.POPULAR);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(PATH, mPath);
+        super.onSaveInstanceState(outState);
     }
 
     private void getMovies(String path) {
+        mPath = path;
         if (NetworkUtils.isOnline(this)) {
             URL url = NetworkUtils.buildUrl(path);
             mMoviesLoader.startLoader(MOVIES_SEARCH_LOADER, url.toString());

@@ -44,7 +44,6 @@ public class NetworkUtils {
     /**
      * YOUTUBE URL
      */
-
     private static final String YOUTUBE_URL = "https://www.youtube.com/watch?v=";
 
     public NetworkUtils() {
